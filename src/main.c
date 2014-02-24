@@ -36,6 +36,7 @@ char textBuffer[32];
 
 //Variables handling boot for clean animations
 int animationNumber = 0;
+int weatherUpdateCount = 0;
 bool booted = false;
 bool bootedTime = 0;
 
@@ -106,9 +107,10 @@ void process_tuple(Tuple *t)
       break;
   }
 	//If the watchface has booted tell the user the weather has updated
-	if(booted == true){
+	if(booted == true && weatherUpdateCount >= 1){
 		glance_this("Weather updated.", 1, 2, 5000);
 	}
+	weatherUpdateCount++;
 }
 
 //When we get a message from the phone
@@ -269,19 +271,23 @@ void handle_bt(bool connected){
 	//Set icon
 	bitmap_layer_set_bitmap(bluetooth_connected_layer, bluetooth_connected_icon);
 }
+
 //Battery section
 void handle_battery(BatteryChargeState charge_state) {
   static char battery_text[] = "100%";
-
+//If the watchface is charging
   if (charge_state.is_charging) {
+	  //Set icon to charge icon
       battery_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY_CHARGE);
 	  snprintf(battery_text, sizeof(battery_text), "%d%%", charge_state.charge_percent);
 	  bitmap_layer_set_bitmap(battery_icon_layer, battery_icon);
     } else {
+	  //Otherwise set icon to standard battery image
 	    battery_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BATTERY);
         snprintf(battery_text, sizeof(battery_text), "%d%%", charge_state.charge_percent);
 	    bitmap_layer_set_bitmap(battery_icon_layer, battery_icon);
       }
+	//Update battery text
   text_layer_set_text(battery_text_layer, battery_text);
 }
 

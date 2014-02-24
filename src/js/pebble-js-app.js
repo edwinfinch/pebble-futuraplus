@@ -41,7 +41,10 @@ function fetchWeather(latitude, longitude) {
         var temperature, icon, city;
         if (response && response.list && response.list.length > 0) {
           var weatherResult = response.list[0];
-          temperature = Math.round(weatherResult.main.temp - 273.15);
+          //Celsius
+		  temperature = Math.round(weatherResult.main.temp - 273.15);
+		  //Fahrenheit
+		  //temperature = Math.round(1.8*(weatherResult.main.temp-273)+32);
           icon = iconFromWeatherId(weatherResult.weather[0].id);
           city = weatherResult.name;
           console.log("It is " + temperature + " degrees");
