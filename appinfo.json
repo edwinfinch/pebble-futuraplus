@@ -1,0 +1,117 @@
+{
+    "versionLabel": "0.8.2",
+    "uuid": "07d40c89-4855-488a-af66-670cbc1998af",
+    "appKeys": {
+        "city": 2,
+        "temperature": 1,
+        "icon": 0
+    },
+    "longName": "Futura Plus",
+    "versionCode": 42,
+    "capabilities": [
+        ""
+    ],
+    "shortName": "Futura Plus",
+    "companyName": "Edwin Finch",
+    "watchapp": {
+        "watchface": true
+    },
+    "resources": {
+        "media": [
+            {
+                "menuIcon": true,
+                "type": "png",
+                "name": "MENU_ICON",
+                "file": "images/menu_image.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_BATTERY_CHARGE",
+                "file": "images/battery_charge.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_BATTERY",
+                "file": "images/battery.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_FOG",
+                "file": "images/Fog.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_SNOW",
+                "file": "images/snow.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_SUN",
+                "file": "images/sunny.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_RAIN",
+                "file": "images/rain.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_THUNDER",
+                "file": "images/thunderstorms.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_LIGHT_RAIN",
+                "file": "images/light_rain.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CLOUD",
+                "file": "images/cloudy.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_DISCONNECTED_ICON",
+                "file": "images/x-mark-512.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CONNECTED_ICON",
+                "file": "images/black-check-mark-hi.png"
+            },
+            {
+                "type": "font",
+                "name": "FONT_FUTURA_EXTNEDED_21",
+                "file": "fonts/FuturaExtended.ttf"
+            },
+            {
+                "characterRegex": "[1]",
+                "type": "font",
+                "name": "FONT_FUTURA_EXTNEDED_29",
+                "file": "fonts/FuturaExtended.ttf"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_BLUETOOTH_ICON",
+                "file": "images/android-bluetooth-icon1.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_TEST_WEATHER_ICON",
+                "file": "images/test_weather_icon.png"
+            },
+            {
+                "characterRegex": "[0-9, :]",
+                "type": "font",
+                "name": "FONT_FUTURA_BOLD_35",
+                "file": "fonts/Futura Extra Bold.ttf"
+            },
+            {
+                "characterRegex": "[a-z, J,F,M,A,S,O,N,D 0-9]",
+                "type": "font",
+                "name": "FONT_FUTURA_LIGHT_29",
+                "file": "fonts/FuturaLight.ttf"
+            }
+        ]
+    }
+}
