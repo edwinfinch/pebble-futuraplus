@@ -76,9 +76,11 @@ function locationSuccess(pos) {
 
 function locationError(err) {
   console.warn('location error (' + err.code + '): ' + err.message);
+	var temperatureError = parseInt(err.code) + 400;
   Pebble.sendAppMessage({
-    "city":"Loc Unavailable",
-    "temperature":"N/A"
+	 //temperatureError + 400;
+	 "city":"Location timed out :(",
+    "temperature":temperatureError
   });
 }
 
@@ -107,57 +109,3 @@ Pebble.addEventListener("webviewclosed",
                                      console.log(e.type);
                                      console.log(e.response);
                                      });
-
-/*
-Old method of fetching weather
-Outdated because it only fetches one pre-defined city
-New method fetches location
-
-function HTTPGET(url) {
-	console.log("HTTPGET called with url " + url);
-	var req = new XMLHttpRequest();
-	req.open("GET", url, false);
-	req.send(null);
-	console.log("Returning response from Openweathermap");
-	return req.responseText;
-}
-
-var getWeather = function() {
-	//Get weather info
-	console.log("Getting wheather info");
-	var response = HTTPGET("http://api.openweathermap.org/data/2.5/weather?q=Guelph,on");
-
-	//Convert to JSON
-	var json = JSON.parse(response);
-
-	//Extract the data
-	var temperature = Math.round(json.main.temp - 273.15);
-	var location = json.name;
-	console.log("Formatting");
-	//Console output to check all is working.
-	console.log("It is " + temperature + " degrees in " + location + " today!");
-
-	//Construct a key-value dictionary	
-	var dict = {"KEY_LOCATION" : location, "KEY_TEMPERATURE": temperature};
-	console.log("Dictionary created, sending to pebble");
-
-	//Send data to watch for display
-	Pebble.sendAppMessage(dict);
-};
-
-Pebble.addEventListener("ready",
-  function(e) {
-	//App is ready to receive JS messages
-	console.log("Ready.");
-	getWeather();
-  }
-);
-
-Pebble.addEventListener("appmessage",
-  function(e) {
-	//Watch wants new data!
-	console.log("Appmessage called");
-	getWeather();
-  }
-);
-*/

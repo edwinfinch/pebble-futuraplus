@@ -1,13 +1,13 @@
 {
-    "versionLabel": "0.8.2",
+    "versionLabel": "0.8.3",
     "uuid": "07d40c89-4855-488a-af66-670cbc1997af",
     "appKeys": {
         "city": 2,
         "temperature": 1,
         "icon": 0
     },
-    "longName": "Futura Plus Fahrenheit",
-    "versionCode": 42,
+    "longName": "Futura Plus Celsius",
+    "versionCode": 46,
     "capabilities": [
         ""
     ],

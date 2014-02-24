@@ -64,7 +64,7 @@ static const uint32_t WEATHER_ICONS[] = {
 };
 
 //Define glance_this function early
-void glance_this(const char *updateText, bool vibrate, int vibrateNum, int animationLength);
+void glance_this(const char *updateText, bool vibrate, int vibrateNum, int animationLength, bool notifyFull);
 
 //static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
 void process_tuple(Tuple *t)
@@ -96,10 +96,23 @@ void process_tuple(Tuple *t)
 	  //If it's the temp.
     case WEATHER_TEMPERATURE_KEY:
 	  //Set textlayer accordingly and write temp for previousTemp variable
-	  snprintf(temperature_buffer, sizeof("-XX"), "%d", value);
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Setting weather");
-      text_layer_set_text(weather_text_layer, (char*) &temperature_buffer);
-	  previousTemp = value;
+	 	snprintf(temperature_buffer, sizeof("-XX"), "%d", value);
+	  	APP_LOG(APP_LOG_LEVEL_INFO, "Setting weather");
+      	text_layer_set_text(weather_text_layer, (char*) &temperature_buffer);
+	  	previousTemp = value;
+	  if(value == 401 || value == 402 || value == 403){
+		  text_layer_set_text(weather_text_layer, "Error");
+		  APP_LOG(APP_LOG_LEVEL_ERROR, "Error %d: Location timed out. Try turning off GPS location on your device.", value);
+		  if(value == 403){
+		  	  glance_this("Location timed out. This is most likely because your provider does not provide GPS serivice. Try turning GPS off. This message will auto-dismiss after 15 seconds.", 1, 3, 15000, 1);
+		  }
+		  else if(value == 402){
+			  glance_this("Location unavailable. This is most likely because you have data turned off. This message will auto-dismiss after 15 seconds..", 1, 3, 15000, 1);
+		  }
+		  else if(value == 401){
+			  glance_this("Location denied. This is most likely because your ISP/work board/school board has blocked access to OpenWeatherMap. This message will auto-dismiss after 15 seconds.", 1, 3, 15000, 1);
+		  }
+	  }
       break;
 	  //This is here just in case we need to debug
     case WEATHER_CITY_KEY:
@@ -107,8 +120,8 @@ void process_tuple(Tuple *t)
       break;
   }
 	//If the watchface has booted tell the user the weather has updated
-	if(booted == true && weatherUpdateCount >= 1){
-		glance_this("Weather updated.", 1, 2, 5000);
+	if(booted == true && weatherUpdateCount >= 3){
+		glance_this("Weather updated.", 1, 2, 5000, 0);
 	}
 	weatherUpdateCount++;
 }
@@ -184,7 +197,7 @@ void on_animation_stopped(Animation *anim, bool finished, void *context)
 		APP_LOG(APP_LOG_LEVEL_INFO, "Booted.");
 		booted = 1;
 		//Debug
-		//glance_this("Booted.", 0, 0, 2000);
+		//glance_this("Booted.", 0, 0, 2000, 0);
 		animationNumber = 0;
 	}
 }
@@ -260,12 +273,12 @@ void handle_bt(bool connected){
 	if(connected == 0){
 		//Update icon and glance_this alert
 		bluetooth_connected_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DISCONNECTED_ICON);
-		glance_this("Bluetooth disconnected", 1, 3, 4000);
+		glance_this("Bluetooth disconnected", 1, 3, 4000, 0);
   }
   	if(connected == 1){
 		//If it's been reconnected, update icon and glance_this alert
   	    bluetooth_connected_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CONNECTED_ICON);
-		glance_this("Bluetooth connected.", 1, 2, 3000);
+		glance_this("Bluetooth connected.", 1, 2, 3000, 0);
 		send_cmd();
   }
 	//Set icon
@@ -309,10 +322,6 @@ void window_load(Window *window){
 	cover_layer = textLayerInit(GRect(180,0,144,84), GColorBlack, GColorWhite, GTextAlignmentCenter);
 	layer_add_child(window_layer, (Layer*) cover_layer);
 	
-	update_at_a_glance = textLayerInit(GRect(0, 300, 144, 168), GColorBlack, GColorClear, GTextAlignmentCenter);
-	text_layer_set_font(update_at_a_glance, fonts_get_system_font(FONT_KEY_GOTHIC_18));
-    layer_add_child(window_layer, (Layer*) update_at_a_glance);
-	
 	invert_layer_half = inverter_layer_create(GRect(0,0,144,84));
 	layer_add_child(window_layer, (Layer*) invert_layer_half);
 	
@@ -325,6 +334,9 @@ void window_load(Window *window){
 	text_layer_set_font(weather_text_layer, futuraExtended);
 	layer_add_child(window_layer, (Layer *) weather_text_layer);
 	snprintf(temperature_buffer, sizeof("-XX"), "%d", previousTemp);
+	if(previousTemp == 403 || previousTemp == 402 || previousTemp == 401){
+		snprintf(temperature_buffer, sizeof("-XX"), "Error");
+	}
 	text_layer_set_text(weather_text_layer, temperature_buffer);
 	
 	bluetooth_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_ICON);
@@ -349,6 +361,10 @@ void window_load(Window *window){
 	bluetooth_connected_layer = bitmap_layer_create(GRect(0, -300, 140, 168));
 	bitmap_layer_set_background_color(bluetooth_connected_layer, GColorClear);
 	layer_add_child(window_layer, (Layer *) bluetooth_connected_layer);
+	
+	update_at_a_glance = textLayerInit(GRect(0, 300, 144, 168), GColorBlack, GColorWhite, GTextAlignmentCenter);
+	text_layer_set_font(update_at_a_glance, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+    layer_add_child(window_layer, (Layer*) update_at_a_glance);
 	
 	struct tm *t;
   	time_t temp;        
@@ -450,14 +466,14 @@ int main(void) {
 
 //Function taken from my other watchface, Clean and Simple
 //Takes simple info and provides wearer with some text and optional vibration
-void glance_this(const char *updateText, bool vibrate, int vibrateNum, int animationLength){
+void glance_this(const char *updateText, bool vibrate, int vibrateNum, int animationLength, bool fullNotify){
 	//Update the text layer to the char provided by function call
 	APP_LOG(APP_LOG_LEVEL_INFO, "glance_this(); called");
 	if(booted == true){
-		APP_LOG(APP_LOG_LEVEL_INFO, "Watchface is booted");
+		APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this: Watchface is booted");
 		//if there's a vibration request,
 		if(vibrate == true){
-			APP_LOG(APP_LOG_LEVEL_INFO, "Vibration number %d", vibrateNum);
+			APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this: Vibration number %d", vibrateNum);
 			//check what number it is and fufill accordingly.
 			if(vibrateNum == 1){
 				vibes_short_pulse();
@@ -469,14 +485,27 @@ void glance_this(const char *updateText, bool vibrate, int vibrateNum, int anima
 				vibes_long_pulse();
 		    }
 		}
-		APP_LOG(APP_LOG_LEVEL_INFO, "Animating");
+		APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this: Animating");
 		//Update text and animate update_at_a_glance layer for fancy effect
 		text_layer_set_text(update_at_a_glance, updateText);
-		GRect start01 = GRect(0, 300, 144, 168);
-		GRect finish01 = GRect(0, 145, 144, 168);
-		GRect start02 = GRect(0, 145, 144, 168);
-		GRect finish02 = GRect(0, 300, 144, 168);
-		animate_layer(text_layer_get_layer(update_at_a_glance), &start01, &finish01, 1000, 0);
-		animate_layer(text_layer_get_layer(update_at_a_glance), &start02, &finish02, 1000, animationLength);
+		
+		if(fullNotify == 1){
+			APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this: Full notification");
+			GRect start01 = GRect(0, 300, 144, 168);
+			GRect finish01 = GRect(0, 0, 144, 168);
+			GRect start02 = GRect(0, 0, 144, 168);
+			GRect finish02 = GRect(0, 300, 144, 168);
+			animate_layer(text_layer_get_layer(update_at_a_glance), &start01, &finish01, 1000, 0);
+			animate_layer(text_layer_get_layer(update_at_a_glance), &start02, &finish02, 1000, animationLength);
+		}
+		else{
+			APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this: Not a full notification");
+			GRect start01 = GRect(0, 300, 144, 168);
+			GRect finish01 = GRect(0, 145, 144, 168);
+			GRect start02 = GRect(0, 145, 144, 168);
+			GRect finish02 = GRect(0, 300, 144, 168);
+			animate_layer(text_layer_get_layer(update_at_a_glance), &start01, &finish01, 1000, 0);
+			animate_layer(text_layer_get_layer(update_at_a_glance), &start02, &finish02, 1000, animationLength);
+		}
 	}
 }
