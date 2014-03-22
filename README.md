@@ -1,16 +1,42 @@
-futuraplus [BROKEN]
+futuraplus
 ==========
-Hello there! If you've come to check out Futura Plus, first of all - thank you! Second of all, I'm sad to inform you that Futura Plus had come accross some pretty nasty bugs (location mostly) and had to be taken down as I didn't want people to be running broken software. Feel free to do what you wish still with the source - the newest and hopefully bug free version should be published for Monday.
-
 Has: 
--12/24 hour support 
 
--Animations for minute/hour change and boot-up 
+Settings...
+Customize the watchface so it’s yours.
+Temperature preference (F/C)
+Battery saving mode
+Seconds 
+Date formatting
+Change boot up animation
+Enable/disable warnings for bluetooth disconnect/reconnect
+Change how often the weather updates
 
--Hourly weather 
+Weather...
+Updates frequently so you know what to wear.
+Fahrenheit/celsius without having to download a different watchface
+Updates on an interval of your choice (15/30/45/60 min)
+Dynamic icons
+Remembers the last temperature and icon synced
+Remembers the last previous working location in case of location time out
+This means no errors!
 
---Remembers what the last temperature and condition was 
+Animations...
+Bring the watchface to life.
+Animation on boot up
+Option to change boot up animation (4 different animations)
+Animation on minute and hourly change
+Animating ticker at the bottom of the screen for info such as when the weather updates, settings update, bluetooth disconnect, if the watchface is out of date or not, and bluetooth reconnect.
 
--Bluetooth and watch battery status -Vibration on bluetooth disconnect, weather update, and bluetooth reconnect
+Don’t like animations? That’s fine! Turn them off with battery saving mode (except boot up animation)
 
--Dynamic icons
+Other Features...
+Why not more?
+Bluetooth status
+Watch battery
+Javascript is future-proof for iOS users
+Tells you when settings are updated
+Alerts you if there is a newer watchface version available
+
+More to come! Stay tuned :)
+
