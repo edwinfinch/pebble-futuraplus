@@ -1,4 +1,5 @@
 var fetched = 0;
+var fetchedVersion = 0;
 
 function iconFromWeatherId(weatherId) {
   if (weatherId > 199 && weatherId < 233) {
@@ -27,36 +28,50 @@ function iconFromWeatherId(weatherId) {
   }
 }
 
+function sleep(millis, callback) {
+    setTimeout(function()
+            { callback(); }
+    , millis);
+}
+
 function fetchWeather(latitude, longitude) {
   var response;
   var req = new XMLHttpRequest();
-  req.open('GET', "http://api.openweathermap.org/data/2.1/find/city?" +
-    "lat=" + latitude + "&lon=" + longitude + "&cnt=1", true);
-	console.log("http://api.openweathermap.org/data/2.1/find/city?" + "lat=" + latitude + "&lon=" + longitude + "&cnt=1")
+  req.open('GET', "http://api.openweathermap.org/data/2.5/weather?" + "lat=" + latitude + "&lon=" + longitude, true);
+	
+  console.log("http://api.openweathermap.org/data/2.5/weather?" + "lat=" + latitude + "&lon=" + longitude);
   req.onload = function(e) {
     if (req.readyState == 4) {
       if(req.status == 200) {
         console.log(req.responseText);
         response = JSON.parse(req.responseText);
-        var temperature, icon, city;
-        if (response && response.list && response.list.length > 0) {
-          var weatherResult = response.list[0];
-          //Celsius
-		  temperature = Math.round(weatherResult.main.temp - 273.15);
-		  //Fahrenheit
-		  //temperature = Math.round(1.8*(weatherResult.main.temp-273)+32);
-          icon = iconFromWeatherId(weatherResult.weather[0].id);
-          city = weatherResult.name;
-          console.log("It is " + temperature + " degrees");
-		  console.log("You are currently residing in: " +city);
-			console.log("Icon resource loaded: " + icon);
+		  console.log("Response: " + response);
+        var temperature, icon, city, address, sunset;
+        //if (response > 0) {
+          	var weatherResultList = response.weather[0];
+			temperature = response.main.temp;
+          	icon = iconFromWeatherId(weatherResultList.id);
+          	city = response.name;
+		  	sunset = response.sys.sunset;
+		  	address = "http://api.openweathermap.org/data/2.5/weather?" + "lat=" + latitude + "&lon=" + longitude;
+          	console.log("It is " + temperature + " degrees");
+		  	console.log("You are currently residing in: " +city);
+		 	console.log("Icon resource loaded: " + icon);
+		  	//Incase of future location error, save the working address, longitude and latitude
+		  	localStorage.setItem("address1", address);
+			localStorage.setItem("latitude1", latitude);
+			localStorage.setItem("longitude1", longitude);
+		  	console.log("Stored working location at: " + localStorage.getItem("address1"));
+			console.log("Working latitude: " + localStorage.getItem("latitude1"));
+			console.log("Working longitude: " + localStorage.getItem("longitude1"));
+			
           Pebble.sendAppMessage({
             "icon":icon,
             "temperature":temperature,
-            "city":city});
-        }
+			});
+        //}
       } else {
-        console.log("Error");
+		  console.log("Error: could not connect! (is api.openweathermap.com down?)");
       }
     }
   };
@@ -65,6 +80,7 @@ function fetchWeather(latitude, longitude) {
 
 function locationSuccess(pos) {
   var coordinates = pos.coords;
+	console.log("Location success! Fetching weather...");
 	if(fetched == 0){
   		fetchWeather(coordinates.latitude, coordinates.longitude);
 		fetched = 1;
@@ -75,13 +91,13 @@ function locationSuccess(pos) {
 }
 
 function locationError(err) {
-  console.warn('location error (' + err.code + '): ' + err.message);
+  console.warn('Location error (' + err.code + '): ' + err.message);
 	var temperatureError = parseInt(err.code) + 400;
-  Pebble.sendAppMessage({
-	 //temperatureError + 400;
-	 "city":"Location timed out :(",
-    "temperature":temperatureError
-  });
+	var workingLatitude = localStorage.getItem("latitude1");
+	var workingLongitude = localStorage.getItem("longitude1");
+	
+	fetchWeather(workingLatitude, workingLongitude);
+	console.log("Fetching previous working temperature from latitude: " + workingLatitude + " and longitude: " + workingLongitude);
 }
 
 var locationOptions = { "timeout": 15000, "maximumAge": 60000 }; 
@@ -91,6 +107,7 @@ Pebble.addEventListener("ready",
                         function(e) {
                           console.log("connect!" + e.ready);
                           locationWatcher = window.navigator.geolocation.watchPosition(locationSuccess, locationError, locationOptions);
+						  fetchVersion();
                           console.log(e.type);
                         });
 
@@ -103,9 +120,62 @@ Pebble.addEventListener("appmessage",
                           console.log("message!");
                         });
 
-Pebble.addEventListener("webviewclosed",
-                                     function(e) {
-                                     console.log("webview closed");
-                                     console.log(e.type);
-                                     console.log(e.response);
-                                     });
+// URL to your configuration page
+var config_url = "http://edwinfinch.github.io/configscreen-futuraplus";
+
+function fetchVersion() {
+	if(fetchedVersion == 0){
+		var response;
+  var req = new XMLHttpRequest();
+  req.open('GET', "http://edwinfinch.github.io/futuraplus", false);
+	console.log("Getting latest watchapp and javascript version from: http://edwinfinch.github.io/futuraplus");
+  req.onload = function(e) {
+    if (req.readyState == 4) {
+      if(req.status == 200) {
+        response = JSON.parse(req.responseText);
+        var watchAppVersion;
+        if (response > 0) {
+			watchAppVersion = response,
+			console.log("Latest watchapp version: " + watchAppVersion + ". Sending to pebble...");
+          Pebble.sendAppMessage({
+            "watchappver":watchAppVersion,
+			});
+			fetchedVersion = 1;
+        }
+		  else{
+			  console.log("Version API error: No existing value in response");
+		  }
+      } else {
+		  console.log("Error: could not connect");
+      }
+    }
+  };
+  req.send(null);
+	}
+}
+
+Pebble.addEventListener("showConfiguration", function(e) {
+	var url = config_url;
+	console.log("Opening configuration page: " + url);
+	fetchVersion();
+	Pebble.openURL(url);
+});
+
+Pebble.addEventListener("webviewclosed", function(e) {
+	if(e.response) {
+		var values = JSON.parse(decodeURIComponent(e.response));
+
+		for(key in values) {
+			window.localStorage.setItem(key, values[key]);
+		}
+
+		Pebble.sendAppMessage(values,
+			function(e) {
+				console.log("Successfully sent options to Pebble");
+			},
+			function(e) {
+				console.log("Failed to send options to Pebble.\nError: " + e.error.message);
+			}
+		);
+	}
+});
