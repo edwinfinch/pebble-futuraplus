@@ -87,7 +87,7 @@ int currentAppVer = 12;
 bool newVersion, nightTime, warnedVersion;
 bool versionChecked = 0;
 int versionDiff, newAppVer;
-int hours, minutes, seconds;
+int hours, minutes, seconds, hourmode;
 
 //Define weather icon resources in an array (in proper order. See JS code)
 static const uint32_t WEATHER_ICONS[] = {

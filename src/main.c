@@ -371,7 +371,12 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     //Format the Time buffer string using tick_time as the time source
 	if(settings.secondsEnabled == 5){
 		text_layer_set_font(time_layer, futuraBold24);
-    	strftime(timeBufferSeconds, sizeof(timeBufferSeconds), "%H:%M:%S", tick_time);
+		if(hourmode == 1){
+			strftime(timeBufferSeconds, sizeof(timeBufferSeconds), "%H:%M:%S", tick_time);
+		}
+		else{
+			strftime(timeBufferSeconds, sizeof(timeBufferSeconds), "%I:%M:%S", tick_time);
+		}
 	}
 	else if(settings.secondsEnabled == 4){
 		text_layer_set_font(time_layer, futuraBold);
@@ -390,9 +395,11 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 	//12 and 24 hour support
 	if(clock_is_24h_style()){
       strftime(timeBuffer, sizeof(timeBuffer), "%H:%M", tick_time);
+	  hourmode = 1;
     }
     else{
       strftime(timeBuffer,sizeof(timeBuffer),"%I:%M",tick_time);
+		hourmode = 0;
     }
 	//Take seconds from tick_time();
 	seconds = tick_time->tm_sec;
