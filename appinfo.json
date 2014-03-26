@@ -1,5 +1,5 @@
 {
-    "versionLabel": "1.2",
+    "versionLabel": "1.2.2",
     "uuid": "07d40c89-4855-488a-af66-670cbc1996af",
     "appKeys": {
         "temperature": 1,
@@ -15,7 +15,7 @@
         "bootanimation": 7
     },
     "longName": "Futura Plus: Revamped",
-    "versionCode": 12,
+    "versionCode": 14,
     "capabilities": [
         "location",
         "configurable"

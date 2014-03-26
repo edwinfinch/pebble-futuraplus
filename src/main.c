@@ -542,13 +542,7 @@ void window_load(Window *window){
 	weather_text_layer = textLayerInit(GRect (0, -300, 140, 168), GColorBlack, GColorClear, GTextAlignmentCenter);
 	text_layer_set_font(weather_text_layer, futuraExtended);
 	layer_add_child(window_layer, (Layer *) weather_text_layer);
-	/*
-	For some reason the persistent storage saves the weather value (when below 0) at it's value + 256... 
-	So we're going to stop that by adding 50 when it saves (I don't think it's -50 anywhere where a
-	Pebble would be...) so we subtract 50 when we load it.
-	*/
-	int fixedWeather = (settings.previousTemp-50);
-	snprintf(temperature_buffer, sizeof("-XX"), "%d", fixedWeather);
+	snprintf(temperature_buffer, sizeof("-XX"), "%d", settings.previousTemp);
 	text_layer_set_text(weather_text_layer, temperature_buffer);
 	
 	bluetooth_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BLUETOOTH_ICON);
@@ -636,7 +630,6 @@ void window_load(Window *window){
 //Unload resources to save memory
 void window_unload(Window *window){
 	app_timer_cancel(timer);
-	app_timer_cancel(glanceTimer);
 	text_layer_destroy(time_layer);
 	text_layer_destroy(date_layer);
 	text_layer_destroy(battery_text_layer);
@@ -728,7 +721,6 @@ void handle_init(void) {
 
 //Deinit animations, subscribed elements ie. bluetooth, and persist settings
 void handle_deinit(void) {
-	settings.previousTemp = settings.previousTemp + 50;
 	valueWritten = persist_write_data(SETTINGS_KEY, &settings, sizeof(settings));
 	APP_LOG(APP_LOG_LEVEL_WARNING, "Wrote %d bytes to settings struct", valueWritten);
 	animation_unschedule_all();
@@ -798,19 +790,16 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 				text_layer_set_text(update_at_a_glance, "Watchface up to date :)");
 			}
 			else if(sentence == 6){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (1 version behind current) Redownload the watchface's newest version in the pebble app store.");
+				text_layer_set_text(update_at_a_glance, "Watchface version out of date (1 version behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
 			}
 			else if(sentence == 7){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (2 versions behind current) Redownload the watchface's newest version in the pebble app store.");
+				text_layer_set_text(update_at_a_glance, "Watchface version out of date (2 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
 			}
 			else if(sentence == 8){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (3 versions behind current) Redownload the watchface's newest version in the pebble app store.");
+				text_layer_set_text(update_at_a_glance, "Watchface version out of date (3 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
 			}
 			else if(sentence == 9){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (more than 3 versions behind current) Redownload the watchface's newest version in the app store.");
-			}
-			else if(sentence == 10){
-				text_layer_set_text(update_at_a_glance, "Welcome to Futura Plus! Please goto the watchface's settings screen for initial configuration. (This message will auto-dismiss)");
+				text_layer_set_text(update_at_a_glance, "Watchface version out of date (more than 3 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
 			}
 			currentlyGlancing = 1;
 				if(fullNotify == 1){

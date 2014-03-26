@@ -40,11 +40,12 @@ typedef struct persist {
 	uint8_t dateFormat;
 	uint8_t weatherIntervalValue;
 	uint8_t bootAnimation;
-	uint8_t previousTemp;
+	int previousTemp;
 	uint8_t previousIcon;
 	uint8_t disconnectWarn;
 	uint8_t reconnectWarn; 
 	uint8_t newVersion;
+	uint8_t changelogShown;
 } __attribute__((__packed__)) persist;
 	
 persist settings = {
@@ -61,7 +62,7 @@ persist settings = {
 	.newVersion = 4,
 };
 
-int valueRead, valueWritten, valueRead2, valueWritten2;
+int valueRead, valueWritten, valueRead2, valueWritten2, fixedWeather;
 
 //Key definitions 
 enum {
@@ -83,8 +84,8 @@ AppTimer *timer;
 int temperature;
 int temperaturePreConvert;
 int weatherInterval = 1800000;
-int currentAppVer = 12;
-bool newVersion, nightTime, warnedVersion;
+int currentAppVer = 14;
+bool newVersion, nightTime, warnedVersion, fixedSaving;
 bool versionChecked = 0;
 int versionDiff, newAppVer;
 int hours, minutes, seconds, hourmode;
