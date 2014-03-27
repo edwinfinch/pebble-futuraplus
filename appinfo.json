@@ -68,13 +68,13 @@
             {
                 "characterRegex": "[0-9%\\-]",
                 "type": "font",
-                "name": "FONT_FUTURA_EXTNEDED_21",
+                "name": "FONT_FUTURA_EXTENDED_21",
                 "file": "fonts/FuturaExtended.ttf"
             },
             {
                 "characterRegex": "[a]",
                 "type": "font",
-                "name": "FONT_FUTURA_EXTNEDED_29",
+                "name": "FONT_FUTURA_EXTENDED_29",
                 "file": "fonts/FuturaExtended.ttf"
             },
             {
