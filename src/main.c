@@ -518,7 +518,7 @@ void window_load(Window *window){
 	futuraBold = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_FUTURA_BOLD_35));
 	futuraBold24 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_FUTURA_BOLD_24));
 	futuraLight = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_FUTURA_LIGHT_29));
-	futuraExtended = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_FUTURA_EXTNEDED_21));
+	futuraExtended = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_FUTURA_EXTENDED_21));
 	
 	time_layer = textLayerInit(GRect(0, -300, 140, 168), GColorBlack, GColorClear, GTextAlignmentCenter);
 	text_layer_set_font(time_layer, futuraBold);
