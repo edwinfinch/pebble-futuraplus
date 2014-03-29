@@ -84,7 +84,7 @@ AppTimer *timer;
 int temperature;
 int temperaturePreConvert;
 int weatherInterval = 1800000;
-int currentAppVer = 14;
+int currentAppVer = 15;
 bool newVersion, nightTime, warnedVersion, fixedSaving;
 bool versionChecked = 0;
 int versionDiff, newAppVer;

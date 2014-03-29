@@ -685,19 +685,48 @@ void handle_init(void) {
 	
 	//Animate all layers
 	if(settings.bootAnimation == 4){
+		//Bottom
 		start = GRect(0, 400, 144, 168);
 		goto animate;
 	}
 	else if(settings.bootAnimation == 5){
+		//Top
 		start = GRect(0, -400, 144, 168);
 		goto animate;
 	}
 	else if(settings.bootAnimation == 6){
+		//Left
 		start = GRect(-300, 50, 144, 168);
 		goto animate;
 	}
 	else if(settings.bootAnimation == 7){
+		//Right
 		start = GRect(400, 50, 144, 168);
+		goto animate;
+	}
+	else if(settings.bootAnimation == 8){
+		//Top left
+		start = GRect(-300, -400, 144, 168);
+		goto animate;
+	}
+	else if(settings.bootAnimation == 9){
+		//Top right
+		start = GRect(300, -400, 144, 168);
+		goto animate;
+	}
+	else if(settings.bootAnimation == 10){
+		//Bottom left
+		start = GRect(-300, 400, 144, 168);
+		goto animate;
+	}
+	else if(settings.bootAnimation == 11){
+		//Bottom right
+		start = GRect(400, 400, 144, 168);
+		goto animate;
+	}
+	else if(settings.bootAnimation == 12){
+		//Garbled
+		start = GRect(72, 84, 144, 168);
 		goto animate;
 	}
 	animate:;

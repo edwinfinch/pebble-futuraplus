@@ -1,5 +1,5 @@
 {
-    "versionLabel": "1.2.2",
+    "versionLabel": "1.3",
     "uuid": "07d40c89-4855-488a-af66-670cbc1996af",
     "appKeys": {
         "temperature": 1,
@@ -15,7 +15,7 @@
         "bootanimation": 7
     },
     "longName": "Futura Plus: Revamped",
-    "versionCode": 14,
+    "versionCode": 15,
     "capabilities": [
         "location",
         "configurable"
@@ -28,99 +28,15 @@
     "resources": {
         "media": [
             {
+                "menuIcon": true,
                 "type": "png",
-                "name": "IMAGE_CLOUDY_MOON",
-                "file": "images/cloudy_moon.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_CLEAR_MOON",
-                "file": "images/moon.png"
-            },
-            {
-                "characterRegex": "[abceghilmnoprstuvyf, ADFJMNOSGC, 0-9, \\-]",
-                "type": "font",
-                "name": "FONT_FUTURA_LIGHT_29",
-                "file": "fonts/FuturaLight.ttf"
-            },
-            {
-                "characterRegex": "[0-9, :]",
-                "type": "font",
-                "name": "FONT_FUTURA_BOLD_35",
-                "file": "fonts/Futura Extra Bold.ttf"
-            },
-            {
-                "characterRegex": "[0-9, :]",
-                "type": "font",
-                "name": "FONT_FUTURA_BOLD_24",
-                "file": "fonts/Futura Extra Bold.ttf"
+                "name": "MENU_ICON",
+                "file": "images/menu_image.png"
             },
             {
                 "type": "png",
-                "name": "IMAGE_TEST_WEATHER_ICON",
-                "file": "images/test_weather_icon.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_BLUETOOTH_ICON",
-                "file": "images/android-bluetooth-icon1.png"
-            },
-            {
-                "characterRegex": "[0-9%\\-]",
-                "type": "font",
-                "name": "FONT_FUTURA_EXTENDED_21",
-                "file": "fonts/FuturaExtended.ttf"
-            },
-            {
-                "characterRegex": "[a]",
-                "type": "font",
-                "name": "FONT_FUTURA_EXTENDED_29",
-                "file": "fonts/FuturaExtended.ttf"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_CONNECTED_ICON",
-                "file": "images/black-check-mark-hi.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_DISCONNECTED_ICON",
-                "file": "images/x-mark-512.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_CLOUD",
-                "file": "images/cloudy.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_LIGHT_RAIN",
-                "file": "images/light_rain.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_THUNDER",
-                "file": "images/thunderstorms.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_RAIN",
-                "file": "images/rain.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_SUN",
-                "file": "images/sunny.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_SNOW",
-                "file": "images/snow.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_FOG",
-                "file": "images/Fog.png"
+                "name": "IMAGE_BATTERY_CHARGE",
+                "file": "images/battery_charge.png"
             },
             {
                 "type": "png",
@@ -129,14 +45,98 @@
             },
             {
                 "type": "png",
-                "name": "IMAGE_BATTERY_CHARGE",
-                "file": "images/battery_charge.png"
+                "name": "IMAGE_FOG",
+                "file": "images/Fog.png"
             },
             {
-                "menuIcon": true,
                 "type": "png",
-                "name": "MENU_ICON",
-                "file": "images/menu_image.png"
+                "name": "IMAGE_SNOW",
+                "file": "images/snow.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_SUN",
+                "file": "images/sunny.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_RAIN",
+                "file": "images/rain.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_THUNDER",
+                "file": "images/thunderstorms.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_LIGHT_RAIN",
+                "file": "images/light_rain.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CLOUD",
+                "file": "images/cloudy.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_DISCONNECTED_ICON",
+                "file": "images/x-mark-512.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CONNECTED_ICON",
+                "file": "images/black-check-mark-hi.png"
+            },
+            {
+                "characterRegex": "[a]",
+                "type": "font",
+                "name": "FONT_FUTURA_EXTENDED_29",
+                "file": "fonts/FuturaExtended.ttf"
+            },
+            {
+                "characterRegex": "[0-9%\\-]",
+                "type": "font",
+                "name": "FONT_FUTURA_EXTENDED_21",
+                "file": "fonts/FuturaExtended.ttf"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_BLUETOOTH_ICON",
+                "file": "images/android-bluetooth-icon1.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_TEST_WEATHER_ICON",
+                "file": "images/test_weather_icon.png"
+            },
+            {
+                "characterRegex": "[0-9, :]",
+                "type": "font",
+                "name": "FONT_FUTURA_BOLD_24",
+                "file": "fonts/Futura Extra Bold.ttf"
+            },
+            {
+                "characterRegex": "[0-9, :]",
+                "type": "font",
+                "name": "FONT_FUTURA_BOLD_35",
+                "file": "fonts/Futura Extra Bold.ttf"
+            },
+            {
+                "characterRegex": "[abceghilmnoprstuvyf, ADFJMNOSGC, 0-9, \\-]",
+                "type": "font",
+                "name": "FONT_FUTURA_LIGHT_29",
+                "file": "fonts/FuturaLight.ttf"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CLEAR_MOON",
+                "file": "images/moon.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_CLOUDY_MOON",
+                "file": "images/cloudy_moon.png"
             }
         ]
     }
