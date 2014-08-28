@@ -20,55 +20,6 @@ I probably would not have persistent storage working yet ;)
 void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength, bool notifyFull);
 static void weatherPlease(void);
 
-void outputSetting(int setting, int value){
-	if(setting == 1){
-		APP_LOG(APP_LOG_LEVEL_WARNING, "The below are not warnings, they are set to warn so they stand out.");
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Key: 4 = 0, 5 = 1, etc. and 4-6 = left, middle, right for element ordering.");
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Weather setting set to: %d (4 = C, 5 = F)", value);
-	}
-	else if(setting == 2){
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Battery save mode: %d", value);
-	}
-	else if(setting == 3){
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Seconds set to: %d", value);
-	}
-	else if(setting == 4){
-		if(value == 4){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "June 8");
-		}
-		else if(value == 5){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "D/M/Y");
-		}
-		else if(value == 6){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "M/D/Y");
-		}
-	}
-	else if(setting == 5){
-		if(value == 4){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "30 minutes");
-		}
-		else if(value == 5){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "15 minutes");
-		}
-		else if(value == 6){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "45 minutes");
-		}
-		else if(value == 7){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "60 minutes");
-		}
-	}
-	else if(setting == 8){
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Previous weather value: %d", value);
-	}
-	else if(setting == 7){
-		APP_LOG(APP_LOG_LEVEL_WARNING, "Boot up animation set to: %d", value);
-	}
-	else{
-		APP_LOG(APP_LOG_LEVEL_ERROR, "In function outputSetting(); : Invalid setting number!");
-	}
-	
-}
-
 void process_tuple(Tuple *t)
 {
 	//Get key
@@ -80,7 +31,6 @@ void process_tuple(Tuple *t)
 	//Get string value
 	char string_value[32];
 	strcpy(string_value, t->value->cstring);
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "Extracting value");	
   switch (key) {
 	  //If the icon has been extracted
     case WEATHER_ICON_KEY:
@@ -89,18 +39,15 @@ void process_tuple(Tuple *t)
         gbitmap_destroy(weather_icon);
       }
 	  //Set icon and layer
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Setting icon");
       weather_icon = gbitmap_create_with_resource(WEATHER_ICONS[t->value->uint8]);
       bitmap_layer_set_bitmap(weather_icon_layer, weather_icon);
 	  settings.previousIcon = t->value->uint8;
 	  if(settings.previousIcon == 5 && nightTime == 1){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Night time and clear");
 		  weather_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLEAR_MOON);
       	  bitmap_layer_set_bitmap(weather_icon_layer, weather_icon);
 		  settings.previousIcon = 10;
 	  }
 	  else if(settings.previousIcon == 6 && nightTime == 1){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Night time and cloudy");
 		  weather_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLOUDY_MOON);
       	  bitmap_layer_set_bitmap(weather_icon_layer, weather_icon);
 		  settings.previousIcon = 11;
@@ -113,15 +60,12 @@ void process_tuple(Tuple *t)
 	 	if(settings.tempPref == 5){
 				  //Fahrenheit
 		  		  temperature = (1.8*(temperaturePreConvert-273)+32);
-				  APP_LOG(APP_LOG_LEVEL_DEBUG, ("Fahrenheit"));
 			  }
 		else if(settings.tempPref == 4){
 			//Celsius
 		  	temperature = (temperaturePreConvert - 273.15);
-			APP_LOG(APP_LOG_LEVEL_DEBUG, ("Celsius"));
 		}
 	    snprintf(temperature_buffer, sizeof("-XX"), "%d", temperature);
-	  	APP_LOG(APP_LOG_LEVEL_INFO, "Setting weather");
       	text_layer_set_text(weather_text_layer, (char*) &temperature_buffer);
 	    settings.previousTemp = temperature;
 		
@@ -129,21 +73,17 @@ void process_tuple(Tuple *t)
       break;
 	case KEY_TEMP_PREF:
 	  updateWeather:;
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Converting temperature to your preference.");
 			  if(value == 5){
 				  //Fahrenheit
 		  		  temperature = (1.8*(temperaturePreConvert-273)+32);
-				  APP_LOG(APP_LOG_LEVEL_INFO, "Setting set to fahrenheit");
 				  settings.tempPref = 5;
 			  }
 			  else if(value == 4){
 				  //Celsius
 		  		  temperature = (temperaturePreConvert - 273.15);
-				  APP_LOG(APP_LOG_LEVEL_INFO, "Setting set to celsius");
 				  settings.tempPref = 4;
 			  }
 	    snprintf(temperature_buffer, sizeof("-XX"), "%d", temperature);
-	  	APP_LOG(APP_LOG_LEVEL_INFO, "Setting weather");
       	text_layer_set_text(weather_text_layer, (char*) &temperature_buffer);
 	    settings.previousTemp = temperature;
 	  if(booted == 1){
@@ -155,91 +95,61 @@ void process_tuple(Tuple *t)
 	  //Inverted
 	  if(value == 5){
 		  settings.batterySaveMode = 5;
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Battery save mode turned on");
 	  }
 	  //Normal
 	  else{
 		  settings.batterySaveMode = 4;
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Battery save mode turned off");
 	  }
 	  break;
 	case KEY_WEATHER_INTERVAL:
 	  if(value == 4){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 30 minutes");
 		  weatherInterval = 1800000;
 		  settings.weatherIntervalValue = 4;
 	  }
 	  else if(value == 5){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 15 minutes");
 		  weatherInterval = 900000;
 		  settings.weatherIntervalValue = 5;
 	  }
 	  else if(value == 6){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 45 minutes");
 		  weatherInterval = 2700000;
 		  settings.weatherIntervalValue = 6;
 	  }
 	  else if(value == 7){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 60 minutes");
 		  weatherInterval = 3600000;
 		  settings.weatherIntervalValue = 7;
 	  }
 	  break;
 	case KEY_DATE_FORMAT:
 	  if(value == 4){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Date format set to: 'June 8'");
 		  settings.dateFormat = 4;
 	  }
 	  else if(value == 5){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Date format set to: 'D/M/Y'");
 		  settings.dateFormat = 5;
 	  }
 	  else if(value == 6){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Date format set to: 'M/D/Y'");
 		  settings.dateFormat = 6;
 	  }
 	  break;
 	case KEY_SECONDS:
 	  if(value == 5){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Seconds enabled");
 		  settings.secondsEnabled = 5;
 	  }
 	  else{
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Seconds disabled");
 		  settings.secondsEnabled = 4;
 	  }
 	  break;
 	case KEY_BOOTANIMATION:
 	  settings.bootAnimation = value;
-	  APP_LOG(APP_LOG_LEVEL_WARNING, "Boot animation set to: %d", value);
 	  break;
 	case KEY_DISWARN:
 	  settings.disconnectWarn = value;
-	  APP_LOG(APP_LOG_LEVEL_WARNING, "Bluetooth disconnect warning set to: %d", value);
 	  break;
 	case KEY_REWARN:
 	  settings.reconnectWarn = value;
-	  APP_LOG(APP_LOG_LEVEL_WARNING, "Bluetooth reconnect warning set to: %d", value);
 	  glance_this(1, 1, 2, 3000, 0);
 	  weatherPlease();
 	  break;
   }
-	if(versionChecked == 0){
-		APP_LOG(APP_LOG_LEVEL_INFO, "Latest watchapp version recieved, comparing...");
-		if(value > currentAppVer){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "Watchapp version outdated");
-			settings.newVersion = 5;
-			newAppVer = value;
-			versionChecked = 1;
-	    }
-		else if(value == currentAppVer){
-			APP_LOG(APP_LOG_LEVEL_INFO, "Watchapp version the same as API");
-			settings.newVersion = 4;
-			glance_this(5, 0, 0, 4000, 0);
-			warnedVersion = 1;
-			versionChecked = 1;
-	    }
-	}
 }
 
 //When we get a message from the phone
@@ -296,7 +206,6 @@ void glanceTimerCallback(void *data){
 		glanceTimer = app_timer_register(500, (AppTimerCallback) glanceTimerCallback, NULL);
 	}
 	else{
-		APP_LOG(APP_LOG_LEVEL_INFO, "Glance_this free, sending request...");
 		glance_this(holdUpSentence, holdUpVibrate, holdUpVibrateNum, holdUpAnimationLength, holdUpFullNotify);
 	}
 	glanceTimerCalled++;
@@ -328,12 +237,10 @@ void on_animation_stopped(Animation *anim, bool finished, void *context)
 	//If the watchface time has hit it's location, set it as booted time to 
 	//prevent minute change animation from firing wrongly
 	if(animationNumber > 1 && bootedTime == 0){
-		APP_LOG(APP_LOG_LEVEL_INFO, "Booted time.");
 		bootedTime = 1;
 	}
 	//When all watchface elements have booted, set variables as true
 	if(animationNumber > 7 && booted == 0){
-		APP_LOG(APP_LOG_LEVEL_INFO, "Booted all elements.");
 		booted = 1;
 		animationNumber = 0;
 	}
@@ -448,27 +355,6 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 	text_layer_set_text(date_layer, dateBuffer);
 	if(hours > 18 || hours < 7){
 		nightTime = 1;
-	}
-	if(settings.newVersion == 5){
-		if(warnedVersion == 0){
-			versionDiff = newAppVer - currentAppVer;
-			if(versionDiff == 1){
-				glance_this(6, 0, 3, 15000, 1);
-				warnedVersion = 1;
-			}
-			else if(versionDiff == 2){
-				glance_this(7, 0, 3, 15000, 1);
-				warnedVersion = 1;
-			}
-			else if(versionDiff == 3){
-				glance_this(8, 0, 3, 15000, 1);
-				warnedVersion = 1;
-			}
-			else if(versionDiff > 3){
-				glance_this(9, 0, 3, 15000, 1);
-				warnedVersion = 1;
-			}
-		}
 	}
 }
 
@@ -592,24 +478,19 @@ void window_load(Window *window){
 	
 	//Set timer for half an hour for weather to update
 	  if(settings.weatherIntervalValue == 4){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 30 minutes");
 		  weatherInterval = 1800000;
 	  }
 	  else if(settings.weatherIntervalValue == 5){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 15 minutes");
 		  weatherInterval = 900000;
 	  }
 	  else if(settings.weatherIntervalValue == 6){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 45 minutes");
 		  weatherInterval = 2700000;
 	  }
 	  else if(settings.weatherIntervalValue == 7){
-		  APP_LOG(APP_LOG_LEVEL_INFO, "Weather update interval set to 60 minutes");
 		  weatherInterval = 3600000;
 	  }
 	else{
 		weatherInterval = 1800000;
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Weather interval does not exist, creating value of 30 minutes");
 	}
 	
 	timer = app_timer_register(weatherInterval, (AppTimerCallback) timerCallback, NULL);
@@ -664,15 +545,6 @@ void handle_init(void) {
 	
 	valueRead = persist_read_data(SETTINGS_KEY, &settings, sizeof(settings));
 	APP_LOG(APP_LOG_LEVEL_WARNING, "Read %d bytes from settings", valueRead);
-	
-	//Output values
-	outputSetting(1, settings.tempPref);
-	outputSetting(2, settings.batterySaveMode);
-	outputSetting(3, settings.secondsEnabled);
-	outputSetting(4, settings.dateFormat);
-	outputSetting(5, settings.weatherIntervalValue);
-	outputSetting(7, settings.bootAnimation);
-	outputSetting(8, settings.previousTemp);
 	
 	//Push window
 	window_stack_push(window, true);
@@ -769,7 +641,6 @@ int main(void) {
 //Takes simple info and provides wearer with some text and optional vibration
 void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength, bool fullNotify){
 	//Update the text layer to the char provided by function call
-	APP_LOG(APP_LOG_LEVEL_INFO, "glance_this(); called");
 	if(currentlyGlancing == 1){
 		holdUpSentence = sentence;
 		holdUpVibrate = vibrate;
@@ -781,11 +652,9 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 	
 	else if(currentlyGlancing == 0){
 		if(booted == true){
-			APP_LOG(APP_LOG_LEVEL_DEBUG, "Glance_this: Watchface is booted");
 			//if there's a vibration request,
 			if(vibrate == true){
 				if(settings.batterySaveMode == 4){
-					APP_LOG(APP_LOG_LEVEL_DEBUG, "Glance_this: Vibration number %d and batterysavemode disabled", vibrateNum);
 					//check what number it is and fufill accordingly.
 					if(vibrateNum == 1){
 						vibes_short_pulse();
@@ -801,7 +670,6 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 				//Incase of future need
 			    }
 		    }
-			APP_LOG(APP_LOG_LEVEL_DEBUG, "Glance_this: Animating");
 			//Update text and animate update_at_a_glance layer for fancy effect
 			if(sentence == 1){
 				text_layer_set_text(update_at_a_glance, "Settings updated.");
@@ -815,24 +683,8 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 			else if(sentence == 4){
 				text_layer_set_text(update_at_a_glance, "Weather updated.");
 			}
-			else if(sentence == 5){
-				text_layer_set_text(update_at_a_glance, "Watchface up to date :)");
-			}
-			else if(sentence == 6){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (1 version behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
-			}
-			else if(sentence == 7){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (2 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
-			}
-			else if(sentence == 8){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (3 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
-			}
-			else if(sentence == 9){
-				text_layer_set_text(update_at_a_glance, "Watchface version out of date (more than 3 versions behind current) Unload and load the watchface again from the store or MyPebbleFaces.");
-			}
 			currentlyGlancing = 1;
 				if(fullNotify == 1){
-					APP_LOG(APP_LOG_LEVEL_DEBUG, "Glance_this: Full notification");
 					text_layer_set_background_color(update_at_a_glance, GColorWhite);
 					GRect start01 = GRect(0, 300, 144, 168);
 					GRect finish01 = GRect(0, 50, 144, 168);
@@ -842,7 +694,6 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 					animate_layer(text_layer_get_layer(update_at_a_glance), &start02, &finish02, 1000, animationLength);
 		        }
 				else{
-					APP_LOG(APP_LOG_LEVEL_DEBUG, "Glance_this: Not a full notification");
 					text_layer_set_background_color(update_at_a_glance, GColorClear);
 					GRect start01 = GRect(0, 300, 144, 168);
 					GRect finish01 = GRect(0, 145, 144, 168);
@@ -854,7 +705,6 @@ void glance_this(int sentence, bool vibrate, int vibrateNum, int animationLength
 		
 	    }
 		else if(booted != true){
-			APP_LOG(APP_LOG_LEVEL_WARNING, "Watchface not booted, holding on reserve.");
 			holdUpSentence = sentence;
 			holdUpVibrate = vibrate;
 			holdUpVibrateNum = vibrateNum;

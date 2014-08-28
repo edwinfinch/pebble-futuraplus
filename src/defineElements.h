@@ -44,8 +44,6 @@ typedef struct persist {
 	uint8_t previousIcon;
 	uint8_t disconnectWarn;
 	uint8_t reconnectWarn; 
-	uint8_t newVersion;
-	uint8_t changelogShown;
 } __attribute__((__packed__)) persist;
 	
 persist settings = {
@@ -59,7 +57,6 @@ persist settings = {
 	.previousIcon = 1,
 	.disconnectWarn = 5,
 	.reconnectWarn = 5,
-	.newVersion = 4,
 };
 
 int valueRead, valueWritten, valueRead2, valueWritten2, fixedWeather;
@@ -76,7 +73,6 @@ enum {
 	KEY_BOOTANIMATION = 0x7,
 	KEY_DISWARN = 0x8,
 	KEY_REWARN = 0x9,
-	KEY_WATCHAPPVER = 0x10,
 };
 
 //Other variables
@@ -84,10 +80,7 @@ AppTimer *timer;
 int temperature;
 int temperaturePreConvert;
 int weatherInterval = 1800000;
-int currentAppVer = 15;
 bool newVersion, nightTime, warnedVersion, fixedSaving;
-bool versionChecked = 0;
-int versionDiff, newAppVer;
 int hours, minutes, seconds, hourmode;
 
 //Define weather icon resources in an array (in proper order. See JS code)
